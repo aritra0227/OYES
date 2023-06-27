@@ -14,6 +14,7 @@ char *fb = (char *) 0x000B8000;
 /* colours */
 #define FB_GREEN     2
 #define FB_DARK_GREY 8
+unsigned int fb_cursor_pos = 0;
 
 
 /** fb_move_cursor:
@@ -52,11 +53,12 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg)
 
 int fb_write(char *buf, unsigned int buf_len)
 {
-    unsigned int pos = 0;
+    unsigned int pos = fb_cursor_pos;
     for(unsigned int i= 0; i < buf_len; ++i){
-        pos = i * 2;
+        pos = fb_cursor_pos * 2;
+        fb_cursor_pos += 1; 
         fb_write_cell(pos, buf[i], FB_GREEN, FB_DARK_GREY);
     }
-        fb_move_cursor(buf_len);
+    fb_move_cursor(fb_cursor_pos);
     return 0;
 }

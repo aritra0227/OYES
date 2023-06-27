@@ -1,15 +1,12 @@
-#include "fb.c"
+#include "stdio.h"
+#include "x86.h"
 
-unsigned int str_length(char * buf){
-    unsigned int count = 0;
-    while(buf[count]){
-        count+=1;
-    }
-    return count;
-}
-
-int kmain(){
-    char * fb_dummy = "FRAMEBUFFER WORKING";
-    fb_write(fb_dummy, str_length(fb_dummy));
+int kmain(){  
+    // unsigned long int remainder;
+    // unsigned long long number = 12345;
+    // int radix =10;
+    // x86_div64_32(number, radix, &number, &remainder);
+    // aprintf(dummy_text, 0);
+    printf("For %d %i %hd %hi %hhu %hhd \r\n", 1234, -5678, (short)27, (short)-42, (unsigned char)20, (signed char)-10);
     return 145;
 }

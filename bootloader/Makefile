@@ -1,4 +1,4 @@
-OBJECTS = loader.o kmain.o io.o stdio.o
+OBJECTS = loader.o kmain.o io.o stdio.o memory_seg.o gdt.o
 CC = gcc
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 		-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c

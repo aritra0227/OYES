@@ -1,7 +1,8 @@
 #include "stdio.h"
-#include "x86.h"
+#include "memory_seg.h"
 
 int kmain(){  
+    install_gdt();
     // unsigned long int remainder;
     // unsigned long long number = 12345;
     // int radix =10;

@@ -8,7 +8,7 @@ global load_segment_registers
 
 ; the following code basically refers to the current descriptors we will start with
 ; the first descriptor (index 1) will be the code segment decsriptor and cs will contain its offset
-; the secodn descriptor (index 2) will be the data segment descriptor and ds,ss,es,fs and gs will contain the offset
+; the second descriptor (index 2) will be the data segment descriptor and ds,ss,es,fs and gs will contain the offset
 
 load_segment_registers:
     mov eax, 0x10

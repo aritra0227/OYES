@@ -1,11 +1,13 @@
+
 #include "memory_seg.h"
 #include "gdt.h"
 #include "stdio.h"
 
-#define DESCRIPTOR_COUNT 3 // null, code, data segments all under PL0 for now
+#define GDT_DESCRIPTOR_COUNT 3 // null, code, data segments all under PL0 for now
 #define BASE 0
 #define LIMIT 0x000FFFFF
 
+//macros taken from https://wiki.osdev.org/GDT_Tutorial
 // Each define here is for a specific flag in the descriptor.
 // Refer to the intel documentation for a description of what each one does.
 #define SEG_DESCTYPE(x)  ((x) << 0x04) // Descriptor type (0 for system, 1 for code/data)
@@ -29,7 +31,7 @@
                      SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
                      SEG_PRIV(0)     | SEG_DATA_RDWR
 
-struct GDT_DESCRIPTOR GDT_ARR[DESCRIPTOR_COUNT];
+struct GDT_DESCRIPTOR GDT_ARR[GDT_DESCRIPTOR_COUNT];
 
 void create_gdt_descriptor(unsigned int index, unsigned int base, unsigned int limit, unsigned short flag){
     GDT_ARR[index].limit_low = limit & 0xFFFF; //15:0 of limit 
@@ -48,7 +50,7 @@ void install_gdt(){
     //Note null descriptor is 8 bytes
     struct GDT* gdt = (struct GDT*)GDT_ARR; //beginning of null descriptor
     gdt->start_address = (unsigned int) GDT_ARR; // 4 bytes
-    gdt->size = (sizeof(struct GDT_DESCRIPTOR)* DESCRIPTOR_COUNT) - 1; // 2 bytes
+    gdt->size = (sizeof(struct GDT_DESCRIPTOR)* GDT_DESCRIPTOR_COUNT) - 1; // 2 bytes
 
     create_gdt_descriptor(1, BASE, LIMIT, (unsigned short) (GDT_CODE_PL0)); //descriptor for code segment
     create_gdt_descriptor(2, BASE, LIMIT, (unsigned short) (GDT_DATA_PL0)); //descriptor for data segment

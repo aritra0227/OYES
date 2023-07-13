@@ -1,10 +1,12 @@
 #include "stdio.h"
 #include "idt.h"
+#include "pic.h"
 #include "memory_seg.h"
 
 int kmain(){  
     install_gdt();
     install_idt();
+    install_pic();
     // unsigned long int remainder;
     // unsigned long long number = 12345;
     // int radix =10;

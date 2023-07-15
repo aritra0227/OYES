@@ -8,11 +8,6 @@
 #define PIC1_PORT_B 0X21
 #define PIC2_PORT_B 0XA1
 
-/* The PIC interrupts have been remapped */
-#define PIC1_START_INTERRUPT 0x20
-#define PIC2_START_INTERRUPT 0x28
-#define PIC2_END_INTERRUPT PIC2_START_INTERRUPT + 7
-
 #define PIC_ACK 0x20
 
 /**
@@ -25,7 +20,7 @@ void install_pic(void)
     outb(PIC1_PORT_A, 0x11); /* Master port A */
     outb(PIC2_PORT_A, 0x11); /* Slave port A */
 
-    /* ICW2 */
+    /* ICW2: This is where the pic interrupt numbers are remapped */
     outb(PIC1_PORT_B, PIC1_START_INTERRUPT); /* Master offset of 0x20 in the IDT */
     outb(PIC2_PORT_B, PIC2_START_INTERRUPT); /* Master offset of 0x28 in the IDT */
 
@@ -36,6 +31,8 @@ void install_pic(void)
     /* ICW4 */
     outb(PIC1_PORT_B, 0x05); /* Set as master */
     outb(PIC2_PORT_B, 0x01); /* Set as slave */
+
+    mask_interrupts(0xFD,0xFF); //only listen to keyboard
 }
 
 

@@ -39,6 +39,7 @@ common_interrupt_handler:
     pop esp
     iret
 
+;some software interrupts
 no_error_code_interrupt_handler 0   ;expands as interrupt_handler_0
 no_error_code_interrupt_handler 1
 no_error_code_interrupt_handler 2
@@ -60,3 +61,29 @@ error_code_interrupt_handler 17
 no_error_code_interrupt_handler 18
 no_error_code_interrupt_handler 19
 no_error_code_interrupt_handler 20
+
+
+;hardware/PIC interrupts (remmapped starting at 0x20 = 32)
+no_error_code_interrupt_handler 32
+no_error_code_interrupt_handler 33
+no_error_code_interrupt_handler 34
+no_error_code_interrupt_handler 35
+no_error_code_interrupt_handler 36
+no_error_code_interrupt_handler 37
+no_error_code_interrupt_handler 38
+no_error_code_interrupt_handler 39
+no_error_code_interrupt_handler 40
+no_error_code_interrupt_handler 41
+no_error_code_interrupt_handler 42
+no_error_code_interrupt_handler 43
+no_error_code_interrupt_handler 44
+no_error_code_interrupt_handler 45
+no_error_code_interrupt_handler 46
+no_error_code_interrupt_handler 47
+
+
+
+global enable_interrupts
+enable_interrupts:
+    sti
+    ret

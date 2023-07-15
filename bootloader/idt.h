@@ -16,7 +16,7 @@ struct IDT_DESCRIPTOR
     unsigned char zero_and_reserved; // unused, set to 0
     unsigned char flags;             // gate type, dpl, and p fields
     unsigned short base_high;        // offset bits 16->31
-};
+}__attribute__((packed));
 
 /**
  * Creates an entry in the IDT

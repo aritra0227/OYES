@@ -25,4 +25,24 @@ void interrupt_handler_18(void);
 void interrupt_handler_19(void);
 void interrupt_handler_20(void);
 
+//pic hardware interrupts:
+void interrupt_handler_32(void);
+void interrupt_handler_33(void);
+void interrupt_handler_34(void);
+void interrupt_handler_35(void);
+void interrupt_handler_36(void);
+void interrupt_handler_37(void);
+void interrupt_handler_38(void);
+void interrupt_handler_39(void);
+void interrupt_handler_40(void);
+void interrupt_handler_41(void);
+void interrupt_handler_42(void);
+void interrupt_handler_43(void);
+void interrupt_handler_44(void);
+void interrupt_handler_45(void);
+void interrupt_handler_46(void);
+void interrupt_handler_47(void);
+
+void enable_interrupts(void);
+
 #endif

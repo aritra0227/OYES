@@ -1,4 +1,5 @@
 #include "idt.h"
+#include "stdio.h"
 #include "load_idt.h"
 #include "interrupt_handler.h"
 #include "system_interrupt_handler.h"
@@ -46,6 +47,24 @@ void install_idt()
     create_idt_descriptor(18, (unsigned int)&interrupt_handler_18);
     create_idt_descriptor(19, (unsigned int)&interrupt_handler_19);
     create_idt_descriptor(20, (unsigned int)&interrupt_handler_20);
+
+    //pic interrupts:
+    create_idt_descriptor(32, (unsigned int)&interrupt_handler_32);
+    create_idt_descriptor(33, (unsigned int)&interrupt_handler_33);
+    create_idt_descriptor(34, (unsigned int)&interrupt_handler_34);
+    create_idt_descriptor(35, (unsigned int)&interrupt_handler_35);
+    create_idt_descriptor(36, (unsigned int)&interrupt_handler_36);
+    create_idt_descriptor(37, (unsigned int)&interrupt_handler_37);
+    create_idt_descriptor(38, (unsigned int)&interrupt_handler_38);
+    create_idt_descriptor(39, (unsigned int)&interrupt_handler_39);
+    create_idt_descriptor(40, (unsigned int)&interrupt_handler_40);
+    create_idt_descriptor(41, (unsigned int)&interrupt_handler_41);
+    create_idt_descriptor(42, (unsigned int)&interrupt_handler_42);
+    create_idt_descriptor(43, (unsigned int)&interrupt_handler_43);
+    create_idt_descriptor(44, (unsigned int)&interrupt_handler_44);
+    create_idt_descriptor(45, (unsigned int)&interrupt_handler_45);
+    create_idt_descriptor(46, (unsigned int)&interrupt_handler_46);
+    create_idt_descriptor(47, (unsigned int)&interrupt_handler_47);
 
     load_idt(idt);
 }

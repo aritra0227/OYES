@@ -25,6 +25,6 @@ void interrupt_handler(struct CPU_STATE cpu, struct INTERRUPT_INFO interrupt_inf
     }
     else
     {
-        printf("Interrupt with interrupt number:%d is not implemented", (int)interrupt_info.interrupt_number);
+        printf("Handler with interrupt number:%d is not implemented", (int)interrupt_info.interrupt_number);
     }
 }

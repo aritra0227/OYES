@@ -31,11 +31,11 @@ void kernel_run_module(multiboot_info_t* mbinfo){
     }
 }
 
-int kmain(unsigned int ebx)
+int kmain()
 {
     kernel_init();
-    multiboot_info_t *mbinfo = (multiboot_info_t *)ebx;
-    kernel_run_module(mbinfo);
+    // multiboot_info_t *mbinfo = (multiboot_info_t *)ebx;
+    // kernel_run_module(mbinfo);
     printf("Still Working %d %i %hd %hi %hhu %hhd \r\n", 1234, -5678, (short)27, (short)-42, (unsigned char)20, (signed char)-10);
     return 145;
 }

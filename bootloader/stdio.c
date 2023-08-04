@@ -2,6 +2,7 @@
 #include "serial.c"
 #include "stdio.h"
 #include "x86.h"
+#include "utilities.h"
 
 #define PRINT_FB 0
 #define PRINT_SERIAL 1
@@ -34,15 +35,6 @@ unsigned int str_length(char *buf)
         count += 1;
     }
     return count;
-}
-
-unsigned int divideUnsigned(unsigned int dividend, unsigned int divisor) {
-    unsigned int quotient = 0;
-    while (dividend >= divisor) {
-        dividend -= divisor;
-        quotient++;
-    }
-    return quotient;
 }
 
 /**
@@ -257,14 +249,8 @@ int *printf_number(int *argp, int length, int sign, int radix)
 
     do
     {
-        //cannot perform the following 2 lines due to division not being properly implemented yet
         unsigned int remainder = number - divideUnsigned(number, radix) * radix;
-        // number = number / radix;
         number = divideUnsigned(number, radix);
-        //the following does the above:
-        // unsigned long int remainder;
-        // x86_div64_32(number, radix, &number, &remainder);
-        // unsigned int remainder = 0;
         buffer[pos++] = g_Chars[remainder];
         (void)radix;
         // putchar('a', 0);

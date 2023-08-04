@@ -3,6 +3,10 @@
 
 global loader                                        ; the entry symbol for ELF
 extern kmain                                         ; function is defined elsewhere
+extern kernel_physical_start
+extern kernel_physical_end
+extern kernel_virtual_start
+extern kernel_virtual_end
 
 MAGIC_NUMBER    equ 0x1BADB002                       ; define the magic number constant
 ALIGN_MODULES   equ 1 << 0                           ; tell GRUB to align modules
@@ -16,7 +20,7 @@ VADDR_OFFSET         equ    0xC0000000
 HIGHER_KERNEL_PD_IDX equ VADDR_OFFSET >> 22 ; recall higher 10 bits refer to the PDE index
                                             ; (, then the next 10 refer to the PTE) 
 FOUR_KB              equ 0x1000
-FOUR_MB              equ (0x100000 * 4)
+PT_ENTRIES           equ 1024
                                             
 PDE_FIRST_4MB_IDNTY_MAP_CONFIG      equ 0x8b           ; set bits: P, R/W, PWT and most importantly PS (to easily map the first 4MB)
 PDE_HIGHER_KERNEL_PHYS_MAP_CONFIG   equ 0x0b           ; set bits: P, R/W, PWT
@@ -30,7 +34,7 @@ kernel_stack:			    ; label points to beginning of memory
 section .data
 align 4096                  ; align at 4096 bytes = 4 KB
 boot_page_directory:
-    times 1024 dd 0 ;each dd equals 4 bytes, hence 1024*4 = 4096
+    times 1024 dd 0 ;each dd (double word) equals 4 bytes, hence 1024*4 = 4096
 boot_page_table:
     times 1024 dd 0
 
@@ -63,7 +67,7 @@ loader:                                         ; the loader label (defined as e
         mov [ecx], ebx
         add ecx, 4
         add ebx, FOUR_KB
-        cmp ebx, FOUR_MB
+        cmp ecx, (boot_page_table - VADDR_OFFSET + (PT_ENTRIES - 1)*4)
         jle .fill_table
 
     
@@ -91,6 +95,13 @@ higher_kernel:
     mov esp, kernel_stack + KERNEL_STACK_SIZE   ; point esp to the start of the
 					                            ; stack 
     ; push ebx ;; for now, turn off reading grub modules
+    ;push addresses of kernel phys/virt start/end to stack
+    push boot_page_directory
+    push boot_page_table
+    push kernel_virtual_end
+    push kernel_virtual_start
+    push kernel_physical_end
+    push kernel_physical_start
     call kmain                  ; result of function will live in eax register
 .loop:
     jmp .loop                   ; loop forever

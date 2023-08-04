@@ -46,7 +46,6 @@ int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, 
     // kernel_run_module(mbinfo);
     // printf("Still Working %d %i %hd %hi %u %hhd \r\n", 1234, -5678, (short)27, (short)-42, (unsigned int)20, (signed char)-10);
     //sanity checks:
-    //Note to self: printf not properly working, unable to print big numbers e.g. 3222274048 (fix soonish?): update: it prints, it just takes super long, fix fast division
     // Note: kernel_virtual_start = 3222274048, kernel_virtual_end= 3222447264
     printf("ADDY OF: kernel_physical_start: %u, kernel_physical_end: %u \r\n", kernel_physical_start, kernel_physical_end);
     // if (kernel_virtual_start == 0xC0100000) printf("kernel_virtual_start: %u", (unsigned int) 3222274048);

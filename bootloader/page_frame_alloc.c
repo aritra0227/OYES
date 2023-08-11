@@ -9,7 +9,6 @@
 
 #include "page_frame_alloc.h"
 #include "utilities.h"
-#include "stdio.h"
 
 #define MEMORY_END 0xFFFFFFFF
 #define PT_ENTRIES 1024
@@ -82,7 +81,7 @@ void page_frame_allocator_init(unsigned int kernel_physical_end)
     //initialize stack:
     FREE_PAGE_FRAMES.top_index = -1;
     FREE_PAGE_FRAMES.max_len_index = PT_ENTRIES - 1;
-    //push first 1024 pages onto stack:
+    //push first 1024 page frames onto stack:
     for (int i = 0; i < PT_ENTRIES; ++i)
         stack_push(&FREE_PAGE_FRAMES, PAGE_FRAME_ALLOCATOR.start_offset + (0x1000 * i));
     return;
@@ -156,8 +155,6 @@ void free_page_frame(unsigned int page_address)
  * Allocates num_page_frames frames
  * @param: num_page_frames: desired number of page frames to allocate
  * Note: Each call returns MAX_REQUESTED_FRAMES frames at most
- * 
- * TODO: RETURN 0 if no blocks are found
 */
 unsigned int *pf_allocate_frames(unsigned int num_page_frames)
 {

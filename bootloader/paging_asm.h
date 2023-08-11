@@ -4,7 +4,7 @@
 /**
  * sets current page directory w.r.t a process
 */
-void set_pdt(unsigned int pd_address);
+void set_pdt(unsigned int * pd_address);
 
 /**
  * invalidates a single page from the tlb

@@ -31,6 +31,22 @@ unsigned int divideUnsigned(unsigned int dividend, unsigned int divisor)
     return quotient;
 }
 
+/**
+ * Returns of the ceil of a number
+ * If dividend%divisor = 0, then returns dividend/divisor + 1 */
+unsigned int div_absolute_ceil(unsigned int dividend, unsigned int divisor)
+{
+    return ((dividend + divisor - 1) / divisor + 1);
+}
+
+/**
+ * Returns of the ceil of a number
+*/
+unsigned int div_ceil(unsigned int dividend, unsigned int divisor)
+{
+    return ((dividend - 1) / divisor + 1);
+}
+
 /*dummy division function*/
 unsigned int slowDivide(unsigned int dividend, unsigned int divisor)
 {
@@ -46,4 +62,29 @@ unsigned int slowDivide(unsigned int dividend, unsigned int divisor)
 unsigned int modulo(unsigned int dividend, unsigned int divisor)
 {
     return dividend - (divisor * (dividend / divisor));
+}
+
+unsigned int align_up(unsigned int n, unsigned int a)
+{
+    unsigned int m = n % a;
+    if (m == 0)
+    {
+        return n;
+    }
+    return n + (a - m);
+}
+
+unsigned int align_down(unsigned int n, unsigned int a)
+{
+    return n - (n % a);
+}
+
+void *memset(void *buffer, const unsigned char byte, const unsigned int len)
+{
+    unsigned char *ptr = (unsigned char *)buffer;
+
+    for (unsigned int i = 0; i < len; i++)
+        ptr[i] = byte;
+
+    return buffer;
 }

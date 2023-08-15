@@ -17,7 +17,7 @@ typedef struct HEADER HEADER_T;
 
 static HEADER_T *freep = 0; //start of freelist
 static HEADER_T base;
-static unsigned int malloc_start_vaddress = 0x400000; //start at 4MB for now
+static unsigned int malloc_start_vaddress = 0;//0x100000; //start at 4MB for now
 static unsigned int total_malloc_pages = 0;
 
 static void *get_more_memory(unsigned int nunits);
@@ -72,7 +72,7 @@ static void *get_more_memory(unsigned int nunits)
     {
         
        
-        map_page((unsigned int *)malloc_paddress[i], (unsigned int *)virt);
+        map_page((unsigned int *)malloc_paddress[i], (unsigned int *)virt, 0);
         unsigned int tmp_entry = kernel_get_temporary_entry();
         unsigned int *page = get_page(virt);
         SET_ATTR(page, PTE_RW);

@@ -2,6 +2,8 @@
 #include "page_frame_alloc.h"
 #include "paging_asm.h"
 #include "utilities.h"
+#include "constants.h"
+#include "stdio.h"
 
 #define PAGE_TABLE_ENTRIES 1024
 #define PAGE_DIRECTORY_ENTRIES 1024
@@ -51,6 +53,30 @@ unsigned int *get_pde(unsigned int *pd, unsigned int vaddress)
     return 0;
 }
 
+unsigned int *create_pdt(unsigned int *pdt_paddr, unsigned int is_user)
+{
+    unsigned int *pf = pf_allocate_frames(1);
+    if (!pf)
+    {
+        printf("COULD NOT ALLOCATE ENOUGH MEMORY FOR PROCESS PDT");
+        return 0;
+    }
+    unsigned int pdt_vaddr = pdt_kernel_find_next_vaddr(FOUR_KB);
+    if (!pdt_vaddr)
+    {
+        printf("COULD NOT FIND VADDR FOR PROCESS PDT");
+        return NULL;
+    }
+    unsigned int res = map_page((unsigned int *)pf[0], (unsigned int *)pdt_vaddr, is_user);
+    if (!res)
+    {
+        printf("COULD NOT MAP PDT VADDR TO PADDR");
+        return 0;
+    }
+    *pdt_paddr = pf[0];
+    return (unsigned int *)pdt_vaddr;
+}
+
 /**
  * Retrieves page for virtual_address
 */
@@ -86,8 +112,12 @@ unsigned int *allocate_page(unsigned int *pte)
 */
 void free_page(unsigned int *pte)
 {
-    free_page_frame(GET_PAGE_PHYS_ADDRESS(pte));
+    unsigned int page_paddr = GET_PAGE_PHYS_ADDRESS(pte);
+    unsigned int tmp_entry = kernel_get_temporary_entry();
+    unsigned int page_vaddr = temp_map_page(page_paddr);
+    free_page_frame(page_vaddr);
     CLEAR_ATTR(pte, PTE_PRESENT);
+    kernel_set_temporary_entry(tmp_entry);
 }
 
 unsigned int kernel_get_temporary_entry()
@@ -121,7 +151,7 @@ void unmap_temp_page(unsigned int *vaddress)
     flush_tlb_entry(*vaddress);
 }
 
-unsigned int map_page(unsigned int *paddress, unsigned int *vaddress)
+unsigned int map_page(unsigned int *paddress, unsigned int *vaddress, unsigned int is_user)
 {
     unsigned int *pde = get_pde((unsigned int *)CURRENT_PD, (unsigned int)vaddress);
     if (!CHECK_ATTR(pde, PDE_PRESENT))
@@ -136,10 +166,14 @@ unsigned int map_page(unsigned int *paddress, unsigned int *vaddress)
 
         SET_ATTR(pde, PDE_PRESENT);
         SET_ATTR(pde, PDE_RW);
+        if (is_user)
+            SET_ATTR(pde, PDE_USER);
         SET_FRAME(pde, (unsigned int)frame[0]);
 
         unsigned int *pte = get_pte(pt_vaddr, (unsigned int)vaddress);
         SET_ATTR(pte, PTE_PRESENT);
+        if (is_user)
+            SET_ATTR(pte, PTE_USER);
         SET_FRAME(pte, (unsigned int)paddress);
         kernel_set_temporary_entry(tmp_entry);
         return 1; //1 for true
@@ -147,12 +181,16 @@ unsigned int map_page(unsigned int *paddress, unsigned int *vaddress)
     else
     {
         SET_ATTR(pde, PDE_RW);
+        if (is_user)
+            SET_ATTR(pde, PTE_USER);
         unsigned int tmp_entry = kernel_get_temporary_entry();
         unsigned int pt_paddr = GET_PAGE_PHYS_ADDRESS(pde);
         unsigned int *pt_vaddr = (unsigned int *)temp_map_page(pt_paddr);
         unsigned int *pte = get_pte((unsigned int *)pt_vaddr, (unsigned int)vaddress);
         SET_ATTR(pt_vaddr, PTE_PRESENT);
         SET_ATTR(pte, PTE_PRESENT);
+        if (is_user)
+            SET_ATTR(pt_vaddr, PTE_USER);
         SET_FRAME(pte, (unsigned int)paddress);
         kernel_set_temporary_entry(tmp_entry);
 

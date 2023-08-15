@@ -5,11 +5,13 @@
 #include "memory_seg.h"
 #include "multiboot.h"
 #include "paging.h"
-#include "pic.h"
 #include "page_frame_alloc.h"
+#include "pic.h"
+#include "process.h"
 #include "serial.h"
 #include "stdio.h"
 #include "system_interrupt_handler.h"
+#include "user_mode.h"
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))
 typedef void (*call_module_t)(void);
@@ -22,6 +24,14 @@ void kernel_init()
     install_pic();
     install_keyboard();
 }
+
+// static void run_user_mode(void){
+//     // unsigned int user_process = create_user_process();
+//     // if(user_process == 0){
+//     //     printf("COULD NOT CREATE USER_PROCESS");
+//     // }
+//     enter_user_mode();
+// }
 
 void kernel_run_module(multiboot_info_t *mbinfo)
 {
@@ -61,16 +71,13 @@ int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, 
     }
     for (int i = 0; i < 4; ++i)
     {
-        printf("%u\n,", malloc_first_test[i]);
+        printf("malloc %u\n,", malloc_first_test[i]);
     }
     for (int i = 1020; i < 1024; ++i)
     {
-        printf("%u\n,", malloc_first_test[i]);
+        printf("malloc %u\n,", malloc_first_test[i]);
     }
     free(malloc_first_test);
-    for (int i = 0; i < 1024; ++i)
-    {
-        malloc_first_test[i] = i;
-    }
     return 145;
+    enter_user_mode();
 }

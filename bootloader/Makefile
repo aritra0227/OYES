@@ -1,4 +1,4 @@
-OBJECTS = loader.o kmain.o io.o stdio.o utilities.o memory_seg.o gdt.o idt.o load_idt.o interrupt_handler.o exceptions.o system_interrupt_handler.o pic.o keyboard.o pagefault_exception.o page_frame_alloc.o paging.o paging_asm.o malloc.o
+OBJECTS = loader.o kmain.o io.o stdio.o utilities.o memory_seg.o gdt.o idt.o load_idt.o interrupt_handler.o exceptions.o system_interrupt_handler.o pic.o keyboard.o pagefault_exception.o page_frame_alloc.o paging.o paging_asm.o malloc.o user_mode.o
 CC = gcc
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 		-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c

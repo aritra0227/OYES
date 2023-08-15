@@ -2,5 +2,8 @@
 #define INCLUDE_CONSTANTS_H
 
 #define NULL ((void *)0)
+#define KERNEL_START_VADDR 0xC0000000
+#define FOUR_KB 0x1000
+#define REG_EFLAGS_DEFAULT 0x202
 
 #endif

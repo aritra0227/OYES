@@ -41,13 +41,14 @@ typedef enum
 } PD_FLAGS;
 
 void paging_init(unsigned int kernel_pd, unsigned int kernel_pt);
-unsigned int map_page(unsigned int *paddress, unsigned int *vaddress);
+unsigned int map_page(unsigned int *paddress, unsigned int *vaddress, unsigned int is_user);
 void unmap_page(unsigned int *vaddress);
 unsigned int *get_page(unsigned int vaddress);
 unsigned int *allocate_page(unsigned int *pte);
 void free_page(unsigned int *pte);
 unsigned int pdt_kernel_find_next_vaddr(unsigned int size);
 unsigned int kernel_get_temporary_entry();
+unsigned int *create_pdt(unsigned int * pdt_paddr, unsigned int is_user);
 void kernel_set_temporary_entry(unsigned int entry);
 
 

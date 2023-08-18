@@ -2,8 +2,9 @@
 #include "memory_seg.h"
 #include "gdt.h"
 #include "stdio.h"
+#include "utilities.h"
 
-#define GDT_DESCRIPTOR_COUNT 3 // null, code, data segments all under PL0 for now
+#define GDT_DESCRIPTOR_COUNT 5 // null, code, data segments all under PL0 for now
 #define BASE 0
 #define LIMIT 0x000FFFFF
 
@@ -38,9 +39,57 @@
                          SEG_LONG(0) | SEG_SIZE(1) | SEG_GRAN(1) | \
                          SEG_PRIV(3) | SEG_DATA_RDWR
 
-struct GDT_DESCRIPTOR GDT_ARR[GDT_DESCRIPTOR_COUNT];
+/*Descriptors for GDT
+* Refer to: https://wiki.osdev.org/GDT_Tutorial 
+* and table 3-8:      https://www.intel.com/content/www/us/en/architecture-and-technology/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.html/
+*/
+struct GDT_DESCRIPTOR
+{
+    unsigned short limit_low;         // 15:0 (low)
+    unsigned short base_low;          // 31:16 (low)
+    unsigned char base_middle;        // 7:0 (high)
+    unsigned short flag_and_limit_hi; // 23:8 (high) includes G,D/B,L, AVL, Limit 19:16, P, DPL, S, Type
+    unsigned char base_high;          //31:24 (high)
+} __attribute__((packed));
 
-void create_gdt_descriptor(unsigned int index, unsigned int base, unsigned int limit, unsigned short flag)
+struct tss_entry_struct
+{
+    unsigned int prev_tss; // The previous TSS - with hardware task switching these form a kind of backward linked list.
+    unsigned int esp0;     // The stack pointer to load when changing to kernel mode.
+    unsigned int ss0;      // The stack segment to load when changing to kernel mode.
+    // Everything below here is unused.
+    unsigned int esp1; // esp and ss 1 and 2 would be used when switching to rings 1 or 2.
+    unsigned int ss1;
+    unsigned int esp2;
+    unsigned int ss2;
+    unsigned int cr3;
+    unsigned int eip;
+    unsigned int eflags;
+    unsigned int eax;
+    unsigned int ecx;
+    unsigned int edx;
+    unsigned int ebx;
+    unsigned int esp;
+    unsigned int ebp;
+    unsigned int esi;
+    unsigned int edi;
+    unsigned int es;
+    unsigned int cs;
+    unsigned int ss;
+    unsigned int ds;
+    unsigned int fs;
+    unsigned int gs;
+    unsigned int ldt;
+    unsigned short trap;
+    unsigned short iomap_base;
+} __attribute__((packed));
+
+typedef struct tss_entry_struct tss_entry_t;
+tss_entry_t tss_entry;
+
+static struct GDT_DESCRIPTOR GDT_ARR[GDT_DESCRIPTOR_COUNT];
+
+static void create_gdt_descriptor(unsigned int index, unsigned int base, unsigned int limit, unsigned short flag)
 {
     GDT_ARR[index].limit_low = limit & 0xFFFF;        //15:0 of limit
     GDT_ARR[index].base_low = base & 0xFFFF;          // 15:0 of base
@@ -50,6 +99,11 @@ void create_gdt_descriptor(unsigned int index, unsigned int base, unsigned int l
     GDT_ARR[index].base_high = (base >> 24) & 0xFF; //31:24
 }
 
+void set_kernel_stack(unsigned int stack)
+{ // Used when an interrupt occurs
+    tss_entry.esp0 = stack;
+}
+extern void flush_tss(void);
 void install_gdt()
 {
     //create the first three essential descriptors
@@ -61,13 +115,18 @@ void install_gdt()
     gdt->start_address = (unsigned int)GDT_ARR;                             // 4 bytes
     gdt->size = (sizeof(struct GDT_DESCRIPTOR) * GDT_DESCRIPTOR_COUNT) - 1; // 2 bytes
 
-    create_gdt_descriptor(1, BASE, LIMIT, (unsigned short)(GDT_CODE_PL0)); //descriptor for code segment
-    create_gdt_descriptor(2, BASE, LIMIT, (unsigned short)(GDT_DATA_PL0)); //descriptor for data segment
+    create_gdt_descriptor(1, BASE, LIMIT, (unsigned short)GDT_CODE_PL0); //descriptor for code segment
+    create_gdt_descriptor(2, BASE, LIMIT, (unsigned short)GDT_DATA_PL0); //descriptor for data segment
 
     //segments for user mode:
-    create_gdt_descriptor(3, BASE, LIMIT, (unsigned char)GDT_CODE_PL3);
-    create_gdt_descriptor(4, BASE, LIMIT, (unsigned char)GDT_DATA_PL3);
+    create_gdt_descriptor(3, BASE, LIMIT, (unsigned short)GDT_CODE_PL3);
+    create_gdt_descriptor(4, BASE, LIMIT, (unsigned short)GDT_DATA_PL3);
+
+    //set up tss
+    // create_gdt_descriptor(5, (unsigned int)(&tss_entry), sizeof(tss_entry), (unsigned short)0x89);
+    // memset(&tss_entry, 0, sizeof(tss_entry));
 
     load_gdt(*gdt);
     load_segment_registers();
+    // flush_tss();
 };

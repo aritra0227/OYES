@@ -72,7 +72,7 @@ static void *get_more_memory(unsigned int nunits)
     {
         
        
-        map_page((unsigned int *)malloc_paddress[i], (unsigned int *)virt, 0);
+        map_page((unsigned int *)malloc_paddress[i], (unsigned int *)virt, 1);
         unsigned int tmp_entry = kernel_get_temporary_entry();
         unsigned int *page = get_page(virt);
         SET_ATTR(page, PTE_RW);

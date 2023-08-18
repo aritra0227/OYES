@@ -22,8 +22,8 @@ HIGHER_KERNEL_PD_IDX equ VADDR_OFFSET >> 22 ; recall higher 10 bits refer to the
 FOUR_KB              equ 0x1000
 PT_ENTRIES           equ 1024
                                             
-PDE_FIRST_4MB_IDNTY_MAP_CONFIG      equ 0x8b           ; set bits: P, R/W, PWT and most importantly PS (to easily map the first 4MB)
-PDE_HIGHER_KERNEL_PHYS_MAP_CONFIG   equ 0x0b           ; set bits: P, R/W, PWT
+PDE_FIRST_4MB_IDNTY_MAP_CONFIG      equ 0x8f ;also setting U/S 0x8b           ; set bits: P, R/W, PWT and most importantly PS (to easily map the first 4MB)
+PDE_HIGHER_KERNEL_PHYS_MAP_CONFIG   equ 0xf  ;...same here... 0x0b           ; set bits: P, R/W, PWT
 
 section .bss
 align 4				        ; align at 4 bytes
@@ -38,6 +38,10 @@ boot_page_directory:
 boot_page_table:
     times 1024 dd 0
 
+section .data
+align 4
+multiboot_module_info:
+    dd 0
 
 section .text                   ; start of the text (code) section
 align 4                         ; the code must be 4 byte aligned
@@ -46,7 +50,9 @@ align 4                         ; the code must be 4 byte aligned
     dd CHECKSUM                 ; and the checksum
 
 loader:                                         ; the loader label (defined as entry point in linker script)
-    ; first set up page directory table
+    mov ecx, (multiboot_module_info - VADDR_OFFSET)
+    mov [ecx], ebx
+    ; now first set up page directory table
     ; first PDE must be identity mapped with PS=1 (hence simply id mapping the whole first 4MB)
     mov eax, boot_page_directory - VADDR_OFFSET ; recall during linking process, the base address is set to VADDR_OFFSET   
                                                 ; note that this suffices even for the (higher bits of the address) since we are mapping 0x0
@@ -74,7 +80,7 @@ loader:                                         ; the loader label (defined as e
     ;now enable paging:
     mov eax, boot_page_directory - VADDR_OFFSET
     and eax, 0xFFFFF000
-    or  eax, 0x08       ; enable PWT
+    or  eax, 0xc ;enable U/S too;0x08       ; enable PWT
     mov cr3, eax        ; eax has the address of the page directory
     mov ebx, cr4        ; read current cr4
     or  ebx, 0x00000010 ; set PSE (page size extensions; to enable 4MB pages)
@@ -96,6 +102,7 @@ higher_kernel:
 					                            ; stack 
     ; push ebx ;; for now, turn off reading grub modules
     ;push addresses of kernel phys/virt start/end to stack
+    push DWORD [multiboot_module_info]
     push boot_page_directory
     push boot_page_table
     push kernel_virtual_end

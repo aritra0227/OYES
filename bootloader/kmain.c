@@ -17,7 +17,7 @@
 typedef void (*call_module_t)(void);
 
 /*wrapper to call several initialization*/
-void kernel_init()
+static void kernel_init()
 {
     install_gdt();
     install_idt();
@@ -33,20 +33,20 @@ void kernel_init()
 //     enter_user_mode();
 // }
 
-void kernel_run_module(multiboot_info_t *mbinfo)
-{
+// static void kernel_run_module(multiboot_info_t *mbinfo)
+// {
 
-    multiboot_module_t *modules = (multiboot_module_t *)mbinfo->mods_addr;
-    unsigned int address_of_module = modules->mod_start;
-    if (CHECK_FLAG(mbinfo->flags, 3) && (mbinfo->mods_count == 1))
-    {
-        printf("RUNNING MODULE");
-        call_module_t start_program = (call_module_t)address_of_module;
-        start_program();
-    }
-}
+//     multiboot_module_t *modules = (multiboot_module_t *)mbinfo->mods_addr;
+//     unsigned int address_of_module = modules->mod_start;
+//     if (CHECK_FLAG(mbinfo->flags, 3) && (mbinfo->mods_count == 1))
+//     {
+//         printf("RUNNING MODULE");
+//         call_module_t start_program = (call_module_t)address_of_module;
+//         start_program();
+//     }
+// }
 
-int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, unsigned int kernel_virtual_start, unsigned int kernel_virtual_end, unsigned int kernel_pt, unsigned int kernel_pd)
+int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, unsigned int kernel_virtual_start, unsigned int kernel_virtual_end, unsigned int kernel_pt, unsigned int kernel_pd, unsigned int module_info)
 {
     kernel_init();
     (void)kernel_virtual_start, (void)kernel_virtual_end;
@@ -78,6 +78,11 @@ int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, 
         printf("malloc %u\n,", malloc_first_test[i]);
     }
     free(malloc_first_test);
-    return 145;
+    (void)module_info;
+    // unsigned int vaddr = pdt_kernel_find_next_vaddr(4);
+    // map_page((unsigned int *)0xc00b8000, (unsigned int *)0xc00b8000, 1);
     enter_user_mode();
+    // multiboot_info_t *mbinfo = (multiboot_info_t *)(module_info-0xC0000000);
+    // kernel_run_module(mbinfo);
+    return 145;
 }

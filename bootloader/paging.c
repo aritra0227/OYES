@@ -53,8 +53,9 @@ unsigned int *get_pde(unsigned int *pd, unsigned int vaddress)
     return 0;
 }
 
-unsigned int *create_pdt(unsigned int *pdt_paddr, unsigned int is_user)
+unsigned int *create_pdt(unsigned int *pdt_paddr)
 {
+    unsigned int is_user = 1; //for now just give everything user priviledges
     unsigned int *pf = pf_allocate_frames(1);
     if (!pf)
     {
@@ -67,7 +68,7 @@ unsigned int *create_pdt(unsigned int *pdt_paddr, unsigned int is_user)
         printf("COULD NOT FIND VADDR FOR PROCESS PDT");
         return NULL;
     }
-    unsigned int res = map_page((unsigned int *)pf[0], (unsigned int *)pdt_vaddr, is_user);
+    unsigned int res = kernel_map_page((unsigned int *)pf[0], (unsigned int *)pdt_vaddr, is_user);
     if (!res)
     {
         printf("COULD NOT MAP PDT VADDR TO PADDR");
@@ -151,9 +152,14 @@ void unmap_temp_page(unsigned int *vaddress)
     flush_tlb_entry(*vaddress);
 }
 
-unsigned int map_page(unsigned int *paddress, unsigned int *vaddress, unsigned int is_user)
+unsigned int kernel_map_page(unsigned int *paddress, unsigned int *vaddress, unsigned int is_user)
 {
-    unsigned int *pde = get_pde((unsigned int *)CURRENT_PD, (unsigned int)vaddress);
+    return map_page((unsigned int *)KERNEL_PD, paddress, vaddress, is_user);
+}
+
+unsigned int map_page(unsigned int *pd, unsigned int *paddress, unsigned int *vaddress, unsigned int is_user)
+{
+    unsigned int *pde = get_pde(pd, (unsigned int)vaddress);
     if (!CHECK_ATTR(pde, PDE_PRESENT))
     {
         // if page table not present in PD:

@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include "utilities.h"
 
-#define GDT_DESCRIPTOR_COUNT 5 // null, code, data segments all under PL0 for now
+#define GDT_DESCRIPTOR_COUNT 6 // null, code, data segments all under PL0 for now
 #define BASE 0
 #define LIMIT 0x000FFFFF
 
@@ -99,10 +99,6 @@ static void create_gdt_descriptor(unsigned int index, unsigned int base, unsigne
     GDT_ARR[index].base_high = (base >> 24) & 0xFF; //31:24
 }
 
-void set_kernel_stack(unsigned int stack)
-{ // Used when an interrupt occurs
-    tss_entry.esp0 = stack;
-}
 extern void flush_tss(void);
 void install_gdt()
 {
@@ -123,10 +119,10 @@ void install_gdt()
     create_gdt_descriptor(4, BASE, LIMIT, (unsigned short)GDT_DATA_PL3);
 
     //set up tss
-    // create_gdt_descriptor(5, (unsigned int)(&tss_entry), sizeof(tss_entry), (unsigned short)0x89);
-    // memset(&tss_entry, 0, sizeof(tss_entry));
+    create_gdt_descriptor(5, (unsigned int)(&tss_entry), sizeof(tss_entry), (unsigned short)0x89);
+    memset(&tss_entry, 0, sizeof(tss_entry));
 
     load_gdt(*gdt);
     load_segment_registers();
-    // flush_tss();
+    flush_tss();
 };

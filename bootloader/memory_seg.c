@@ -4,7 +4,7 @@
 #include "stdio.h"
 #include "utilities.h"
 
-#define GDT_DESCRIPTOR_COUNT 6 // null, code, data segments all under PL0 for now
+#define GDT_DESCRIPTOR_COUNT 6 // null, code, data segments for PL0 and PL3, tss
 #define BASE 0
 #define LIMIT 0x000FFFFF
 

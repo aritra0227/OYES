@@ -1,6 +1,6 @@
-#include "io.h"
+#include "utility/io.h"
 #include "interrupt/pic.h"
-#include "stdio.h"
+#include "stdlib/stdio.h"
 #include "interrupt/interrupt_handler.h"
 #include "hardware/keyboard.h"
 

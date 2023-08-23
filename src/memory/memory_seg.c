@@ -1,7 +1,7 @@
 #include "memory/memory_seg.h"
 #include "memory/gdt.h"
-#include "stdio.h"
-#include "utilities.h"
+#include "stdlib/stdio.h"
+#include "utility/utilities.h"
 
 #define GDT_DESCRIPTOR_COUNT 6 // null, code, data segments for PL0 and PL3, tss
 #define BASE 0

@@ -1,6 +1,6 @@
 #include "memory/malloc.h"
-#include "constants.h"
-#include "utilities.h"
+#include "utility/constants.h"
+#include "utility/utilities.h"
 #include "memory/paging.h"
 #include "memory/page_frame_alloc.h"
 

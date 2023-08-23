@@ -1,10 +1,10 @@
-#include "process.h"
+#include "kernel/process.h"
+#include "utility/constants.h"
+#include "utility/utilities.h"
 #include "memory/malloc.h"
-#include "constants.h"
 #include "memory/paging.h"
-#include "utilities.h"
 #include "memory/page_frame_alloc.h"
-#include "stdio.h"
+#include "stdlib/stdio.h"
 #define USER_MODE_CODE_SEGMENT_SELECTOR 0x18
 #define USER_MODE_DATA_SEGMENT_SELECTOR 0x20
 #define PROCESS_INIT_STACK_VADDR (KERNEL_START_VADDR - FOUR_KB) //recall that this is the stack start for all processes in VM

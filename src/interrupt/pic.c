@@ -1,5 +1,5 @@
-#include "io.h"
-#include "stdio.h"
+#include "utility/io.h"
+#include "stdlib/stdio.h"
 #include "interrupt/pic.h"
 
 #define PIC1_PORT_A 0x20

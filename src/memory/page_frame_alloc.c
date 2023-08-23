@@ -8,7 +8,7 @@
 */
 
 #include "memory/page_frame_alloc.h"
-#include "utilities.h"
+#include "utility/utilities.h"
 
 #define MEMORY_END 0xFFFFFFFF
 #define PT_ENTRIES 1024

@@ -1,6 +1,6 @@
 #include "interrupt/interrupt_handler.h"
-#include "stdio.h"
-#include "constants.h"
+#include "stdlib/stdio.h"
+#include "utility/constants.h"
 
 interrupt_handler_t interrupt_handlers[IDT_INTERRUPTS_NUM];
 

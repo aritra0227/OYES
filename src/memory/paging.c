@@ -1,9 +1,9 @@
 #include "memory/paging.h"
 #include "memory/page_frame_alloc.h"
 #include "memory/paging_asm.h"
-#include "utilities.h"
-#include "constants.h"
-#include "stdio.h"
+#include "utility/utilities.h"
+#include "utility/constants.h"
+#include "stdlib/stdio.h"
 
 #define PAGE_TABLE_ENTRIES 1024
 #define PAGE_DIRECTORY_ENTRIES 1024

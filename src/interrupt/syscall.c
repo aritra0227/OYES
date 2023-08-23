@@ -1,10 +1,10 @@
-#include "process.h"
+#include "kernel/process.h"
 // #include "scheduler.h"
 #include "memory/paging.h"
-#include "constants.h"
+#include "utility/constants.h"
 #include "interrupt/syscall.h"
 #include "memory/memory_seg.h"
-#include "stdio.h"
+#include "stdlib/stdio.h"
 
 static unsigned int NUM_PROCESSES = 0;
 

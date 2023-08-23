@@ -1,5 +1,5 @@
-#include "fb.c"
-#include "hardware/serial.c"
+#include "../display/fb.c"
+#include "../hardware/serial.c"
 #include "stdio.h"
 #include "x86.h"
 #include "utilities.h"

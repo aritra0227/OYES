@@ -1,5 +1,5 @@
 #include "interrupt/idt.h"
-#include "stdio.h"
+#include "stdlib/stdio.h"
 #include "interrupt/load_idt.h"
 #include "interrupt/interrupt_handler.h"
 #include "interrupt/system_interrupt_handler.h"

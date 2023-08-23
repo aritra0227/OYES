@@ -1,8 +1,8 @@
 #include "../display/fb.c"
 #include "../hardware/serial.c"
-#include "stdio.h"
-#include "x86.h"
-#include "utilities.h"
+#include "stdlib/stdio.h"
+#include "utility/x86.h"
+#include "utility/utilities.h"
 
 #define PRINT_FB 0
 #define PRINT_SERIAL 1

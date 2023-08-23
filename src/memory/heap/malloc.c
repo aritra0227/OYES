@@ -1,8 +1,8 @@
-#include "memory/malloc.h"
+#include "memory/heap/malloc.h"
 #include "utility/constants.h"
 #include "utility/utilities.h"
-#include "memory/paging.h"
-#include "memory/page_frame_alloc.h"
+#include "memory/virtual/paging.h"
+#include "memory/physical/page_frame_alloc.h"
 
 #define PAGE_FRAME_SIZE 0x1000
 #define NALLOC 1024

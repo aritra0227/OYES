@@ -8,10 +8,10 @@
 #include "kernel/process.h"
 #include "kernel/multiboot.h"
 #include "kernel/user_mode.h"
-#include "memory/malloc.h"
-#include "memory/memory_seg.h"
-#include "memory/paging.h"
-#include "memory/page_frame_alloc.h"
+#include "memory/heap/malloc.h"
+#include "memory/physical/memory_seg.h"
+#include "memory/virtual/paging.h"
+#include "memory/physical/page_frame_alloc.h"
 #include "stdlib/stdio.h"
 
 #define CHECK_FLAG(flags, bit) ((flags) & (1 << (bit)))

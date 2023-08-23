@@ -1,4 +1,3 @@
-
 #include "memory_seg.h"
 #include "gdt.h"
 #include "stdio.h"
@@ -97,6 +96,11 @@ static void create_gdt_descriptor(unsigned int index, unsigned int base, unsigne
     GDT_ARR[index].flag_and_limit_hi = ((limit >> 16) & 0x0F) << 8;
     GDT_ARR[index].flag_and_limit_hi |= flag & 0xF0FF;
     GDT_ARR[index].base_high = (base >> 24) & 0xFF; //31:24
+}
+
+void set_kernel_stack(unsigned char segment, unsigned int kernel_stack_vaddr){
+    tss_entry.esp0 = kernel_stack_vaddr;
+    tss_entry.ss0 = segment;
 }
 
 extern void flush_tss(void);

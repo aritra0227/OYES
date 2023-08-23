@@ -79,7 +79,7 @@ unsigned int *create_pdt(unsigned int *pdt_paddr)
 }
 
 /**
- * Retrieves page for virtual_address
+ * Retrieves physical page for virtual_address
 */
 unsigned int *get_page(unsigned int vaddress)
 {
@@ -206,9 +206,12 @@ unsigned int map_page(unsigned int *pd, unsigned int *paddress, unsigned int *va
 
 void unmap_page(unsigned int *vaddress)
 {
+    unsigned int tmp_entry = kernel_get_temporary_entry();
     unsigned int *pte = get_page((unsigned int)vaddress);
     SET_FRAME(pte, 0);
     CLEAR_ATTR(pte, PTE_PRESENT);
+    kernel_set_temporary_entry(tmp_entry);
+    flush_tlb_entry(*vaddress);
 }
 
 unsigned int pt_kernel_find_next_vaddr(unsigned int pdt_idx, unsigned int *pt, unsigned int size)
@@ -264,11 +267,31 @@ unsigned int pdt_kernel_find_next_vaddr(unsigned int size)
     return 0;
 }
 
-void set_current_pd(unsigned int *pd_address)
+void set_current_pd(unsigned int pdt_vaddr, unsigned int pdt_paddr)
 {
-    CURRENT_PD = (struct PDE *)pd_address;
-    set_pdt(pd_address);
+    printf("in here now");
+    CURRENT_PD = (struct PDE *)pdt_vaddr;
+    printf("in here now 2");
+    // unsigned int tmp_entry = kernel_get_temporary_entry();
+    // unsigned int vaddr = temp_map_page(pd_address);
+    set_pdt(pdt_paddr);
+    // kernel_set_temporary_entry(tmp_entry);
+    printf("here at the end ong");
     return;
+}
+void load_process_pdt(unsigned int *pdt, unsigned int pdt_paddr)
+{
+    printf("hi I'm inside");
+    unsigned int *kernel_pd = (unsigned int *)KERNEL_PD;
+    //first copy higher half kernel into process_pdt:
+    for (int i = KERNEL_PT_PDT_IDX; i < PAGE_DIRECTORY_ENTRIES; ++i)
+    {
+        // printf("this is the entry addr %u, %d", (unsigned int)(kernel_pd +i), i);
+        if (CHECK_ATTR((kernel_pd + i), PDE_PRESENT))
+            pdt[i] = kernel_pd[i];
+    }
+    printf("hi I'm here");
+    set_current_pd((unsigned int)pdt, pdt_paddr);
 }
 
 void paging_init(unsigned int kernel_pd, unsigned int kernel_pt)

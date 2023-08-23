@@ -14,5 +14,7 @@ struct GDT
 */
 void install_gdt();
 
+void set_kernel_stack(unsigned char segment, unsigned int kernel_stack_vaddr);
+
 
 #endif

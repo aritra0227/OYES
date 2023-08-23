@@ -10,6 +10,7 @@
 #include "process.h"
 #include "serial.h"
 #include "stdio.h"
+#include "syscall.h"
 #include "system_interrupt_handler.h"
 #include "user_mode.h"
 
@@ -25,6 +26,9 @@ static void kernel_init()
     install_keyboard();
 }
 
+extern void user_entry(void);
+typedef void (*program_t)(void);
+
 // static void run_user_mode(void){
 //     // unsigned int user_process = create_user_process();
 //     // if(user_process == 0){
@@ -33,28 +37,25 @@ static void kernel_init()
 //     enter_user_mode();
 // }
 
-// static void kernel_run_module(multiboot_info_t *mbinfo)
-// {
-
-//     multiboot_module_t *modules = (multiboot_module_t *)mbinfo->mods_addr;
-//     unsigned int address_of_module = modules->mod_start;
-//     if (CHECK_FLAG(mbinfo->flags, 3) && (mbinfo->mods_count == 1))
-//     {
-//         printf("RUNNING MODULE");
-//         call_module_t start_program = (call_module_t)address_of_module;
-//         start_program();
-//     }
-// }
+void kernel_run_module(multiboot_info_t *mbinfo)
+{
+    printf("INSIDE RUN MODULE\n");
+    multiboot_module_t *modules = (multiboot_module_t *)mbinfo->mods_addr;
+    unsigned int address_of_module = modules->mod_start;
+    printf("flags: %u,     count :%u",mbinfo->flags,mbinfo->mods_count);
+    if (CHECK_FLAG(mbinfo->flags, 3) && (mbinfo->mods_count == 1))
+    {
+        printf("RUNNING MODULE");
+        call_module_t start_program = (call_module_t)address_of_module;
+        start_program();
+    }
+    printf("EOP");
+}
 
 int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, unsigned int kernel_virtual_start, unsigned int kernel_virtual_end, unsigned int kernel_pt, unsigned int kernel_pd, unsigned int module_info)
 {
     kernel_init();
     (void)kernel_virtual_start, (void)kernel_virtual_end;
-    // serial_write("HI I AM TESTING SERIAL");
-    // multiboot_info_t *mbinfo = (multiboot_info_t *)ebx;
-    // kernel_run_module(mbinfo);
-    // printf("Still Working %d %i %hd %hi %u %hhd \r\n", 1234, -5678, (short)27, (short)-42, (unsigned int)20, (signed char)-10);
-    //sanity checks:
     // Note: kernel_virtual_start = 3222274048, kernel_virtual_end= 3222447264
     printf("ADDY OF: kernel_physical_start: %u, kernel_physical_end: %u \r\n", kernel_physical_start, kernel_physical_end);
     // if (kernel_virtual_start == 0xC0100000) printf("kernel_virtual_start: %u", (unsigned int) 3222274048);
@@ -79,10 +80,19 @@ int kmain(unsigned int kernel_physical_start, unsigned int kernel_physical_end, 
     }
     free(malloc_first_test);
     (void)module_info;
+    // program_t user_program = (program_t)pf_allocate_frames(1)[0];
+    // user_program = user_entry;
+    // program_t user_program = (program_t) malloc(sizeof(program_t));
+    // user_program = user_entry;
+    // user_program();
+    // int res = sys_exec((unsigned int *)user_entry);
+    // printf("this is the res %d", res);
     // unsigned int vaddr = pdt_kernel_find_next_vaddr(4);
-    // map_page((unsigned int *)0xc00b8000, (unsigned int *)0xc00b8000, 1);
-    enter_user_mode();
-    // multiboot_info_t *mbinfo = (multiboot_info_t *)(module_info-0xC0000000);
-    // kernel_run_module(mbinfo);
+    // kernel_map_page((unsigned int *)0xc00b8000, (unsigned int *)0xc00b8000, 1);
+    // unsigned int *mbinfo_vaddr = (unsigned int *)pdt_kernel_find_next_vaddr(sizeof(multiboot_info_t *));
+    // kernel_map_page((unsigned int *)module_info, mbinfo_vaddr, 1);
+    enter_user_mode((unsigned int)&user_entry); 
+    // multiboot_info_t *mbinfo = (multiboot_info_t *)(module_info);
+    // kernel_run_module((multiboot_info_t *)mbinfo_vaddr);
     return 145;
 }

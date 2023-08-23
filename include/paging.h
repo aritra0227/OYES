@@ -1,9 +1,9 @@
 #ifndef INCLUDE_PAGING_H
 #define INCLUDE_PAGING_H
 
-#define GET_PD_IDX(virt_address) (virt_address >> 22)              //recall highest 10 bits are pd entry
-#define GET_PT_IDX(virt_address) ((virt_address >> 12) & 0x3FF)    //middle 10 bits are pt entry
-#define GET_PAGE_PHYS_ADDRESS(pd_entry) ((*pd_entry) & ~0xFFF) //recall highest 20 bits represent physical address
+#define GET_PD_IDX(virt_address) (virt_address >> 22)           //recall highest 10 bits are pd entry
+#define GET_PT_IDX(virt_address) ((virt_address >> 12) & 0x3FF) //middle 10 bits are pt entry
+#define GET_PAGE_PHYS_ADDRESS(pd_entry) ((*pd_entry) & ~0xFFF)  //recall highest 20 bits represent physical address
 #define SET_ATTR(entry, attr) (*entry |= attr)
 #define CLEAR_ATTR(entry, attr) (*entry &= ~attr)
 #define CHECK_ATTR(entry, attr) (*entry & attr) //to check whether some attribute exists
@@ -39,7 +39,6 @@ typedef enum
     PDE_PAT = 0X2000,   // note: 4MB entry only
     PDE_FRAME = 0xFFFFF000,
 } PD_FLAGS;
-
 void paging_init(unsigned int kernel_pd, unsigned int kernel_pt);
 unsigned int kernel_map_page(unsigned int *paddress, unsigned int *vaddress, unsigned int is_user);
 unsigned int map_page(unsigned int *pd, unsigned int *paddress, unsigned int *vaddress, unsigned int is_user);
@@ -49,8 +48,8 @@ unsigned int *allocate_page(unsigned int *pte);
 void free_page(unsigned int *pte);
 unsigned int pdt_kernel_find_next_vaddr(unsigned int size);
 unsigned int kernel_get_temporary_entry();
-unsigned int *create_pdt(unsigned int * pdt_paddr);
+unsigned int *create_pdt(unsigned int *pdt_paddr);
 void kernel_set_temporary_entry(unsigned int entry);
-
+void load_process_pdt(unsigned int *pdt, unsigned int pdt_paddr);
 
 #endif

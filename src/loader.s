@@ -2,6 +2,7 @@
 ;Refer to https://wiki.osdev.org/Higher_Half_bare_bones and https://wiki.osdev.org/Paging#Page_Directory
 
 global loader                                        ; the entry symbol for ELF
+global kernel_stack
 extern kmain                                         ; function is defined elsewhere
 extern kernel_physical_start
 extern kernel_physical_end

@@ -1,7 +1,7 @@
-OBJECTS = loader.o kmain.o io.o stdio.o utilities.o memory_seg.o gdt.o idt.o load_idt.o interrupt_handler.o exceptions.o system_interrupt_handler.o pic.o keyboard.o pagefault_exception.o page_frame_alloc.o paging.o paging_asm.o malloc.o user_mode.o
+OBJECTS = src/loader.o src/kmain.o src/io.o src/stdio.o src/utilities.o src/memory_seg.o src/gdt.o src/idt.o src/load_idt.o src/interrupt_handler.o src/exceptions.o src/system_interrupt_handler.o src/pic.o src/keyboard.o src/pagefault_exception.o src/page_frame_alloc.o src/paging.o src/paging_asm.o src/malloc.o src/user_mode.o src/user_interrupt.o src/tss.o src/user_entry.o src/syscall.o src/process.o
 CC = gcc
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
-		-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c
+		-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c -Iinclude
 LDFLAGS = -T link.ld -melf_i386
 AS = nasm
 ASFLAGS = -f elf
@@ -35,3 +35,4 @@ run: os.iso
 
 clean:
 	rm -rf *.o kernel.elf os.iso
+	rm -rf src/*.o

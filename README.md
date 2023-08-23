@@ -31,7 +31,7 @@ I did start writing some process management syscalls and a planning out a schedu
   - to load robust programs on multiple processes
   - write a nice interactive shell and possibly make life easier on running programs on this shell
 
-# TODO (in very likely chronological order):
+# TODO (in a very likely chronological order):
 - Write a writable file system
 - Enable running C programs
   - May also require an elf parser

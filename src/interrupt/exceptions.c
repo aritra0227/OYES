@@ -1,7 +1,7 @@
 /**
  * Dedicate this file to software interrupts/exceptions
 */
-#include "interrupt_handler.h"
+#include "interrupt/interrupt_handler.h"
 #include "stdio.h"
 
 #define PAGEFAULT_INTERRUPT_NUMBER 0x0E

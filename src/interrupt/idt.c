@@ -1,8 +1,8 @@
-#include "idt.h"
+#include "interrupt/idt.h"
 #include "stdio.h"
-#include "load_idt.h"
-#include "interrupt_handler.h"
-#include "system_interrupt_handler.h"
+#include "interrupt/load_idt.h"
+#include "interrupt/interrupt_handler.h"
+#include "interrupt/system_interrupt_handler.h"
 
 #define IDT_DESCRIPTOR_COUNT 256
 #define TRAP_GATE_FLAGS 0x8F //generic flags used: p=1, dpl=0b00, type=0b1111 => flags=1000_1111b=0x8F, refer to: https://wiki.osdev.org/Interrupt_Descriptor_Table

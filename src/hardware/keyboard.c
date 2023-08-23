@@ -1,8 +1,8 @@
 #include "io.h"
-#include "pic.h"
+#include "interrupt/pic.h"
 #include "stdio.h"
-#include "interrupt_handler.h"
-#include "keyboard.h"
+#include "interrupt/interrupt_handler.h"
+#include "hardware/keyboard.h"
 
 #define KBD_DATA_PORT 0x60
 #define KBD_BUFFER_SIZE 1000

@@ -1,9 +1,9 @@
 #include "process.h"
-#include "malloc.h"
+#include "memory/malloc.h"
 #include "constants.h"
-#include "paging.h"
+#include "memory/paging.h"
 #include "utilities.h"
-#include "page_frame_alloc.h"
+#include "memory/page_frame_alloc.h"
 #include "stdio.h"
 #define USER_MODE_CODE_SEGMENT_SELECTOR 0x18
 #define USER_MODE_DATA_SEGMENT_SELECTOR 0x20

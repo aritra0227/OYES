@@ -7,7 +7,7 @@
  * WHEN STACK IS EMPTY, ALLOCATE MORE PAGES THROUGH BITMAP
 */
 
-#include "page_frame_alloc.h"
+#include "memory/page_frame_alloc.h"
 #include "utilities.h"
 
 #define MEMORY_END 0xFFFFFFFF

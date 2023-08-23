@@ -1,5 +1,5 @@
-#include "memory_seg.h"
-#include "gdt.h"
+#include "memory/memory_seg.h"
+#include "memory/gdt.h"
 #include "stdio.h"
 #include "utilities.h"
 

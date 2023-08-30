@@ -43,7 +43,7 @@ I did start writing some process management syscalls and a planning out a schedu
 - Load and run a simple interactive game
 
 
-# PERSONAL NOTES:
+### PERSONAL NOTES:
 - IMPORTANT FOR BOCH EMULATOR TO SHOW UP: 
   - SSH USING -X -Y
 
